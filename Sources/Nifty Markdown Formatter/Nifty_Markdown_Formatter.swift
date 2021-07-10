@@ -1,6 +1,94 @@
-public struct Nifty_Markdown_Formatter {
-    public private(set) var text = "Hello, World!"
 
-    public init() {
+import SwiftUI
+
+/// Heading struct used to represent headings.
+private struct Heading: Identifiable {
+    let id = UUID()
+    let text: String
+    let headingSize: Int
+}
+
+/**
+ Formats the markdown.
+
+ - Parameter string: the markdown to be formatted as a `String`.
+ */
+private func formatStringToMarkdown(string: String) -> [Text] {
+    var formattedStrings: [Text] = []
+    let splitStrings: [String] = string.components(separatedBy: "\n")
+    for string in splitStrings {
+        if string.starts(with: "#") {
+            let headingSize = string.distance(
+                from: string.startIndex,
+                to: string.firstIndex(of: " ") ?? string.startIndex
+            )
+            var headingText = string
+            headingText.removeSubrange(...headingText.firstIndex(of: " ")!)
+            let heading = formattedHeading(Heading(
+                text: headingText,
+                headingSize: headingSize
+            ))
+            formattedStrings.append(heading)
+        } else {
+            if #available(iOS 15, macOS 12, *) {
+                if let attributedString = try? AttributedString(markdown: string) {
+                    formattedStrings.append(Text(attributedString))
+                } else {
+                    formattedStrings.append(Text(string))
+                }
+            } else {
+                formattedStrings.append(Text(string))
+            }
+        }
+    }
+    
+    return formattedStrings
+}
+
+/**
+ Formats heading by giving it a correct font size.
+ 
+ - Parameter heading: the heading to be formatted.
+ 
+ - Returns: `Text` view with corrent font sizing.
+ */
+private func formattedHeading(_ formattedText: Heading) -> Text {
+    if formattedText.headingSize <= 0 {
+        return Text(formattedText.text).font(.body)
+    } else if formattedText.headingSize == 1 {
+        return Text(formattedText.text).font(.largeTitle)
+    } else if formattedText.headingSize == 2 {
+        return Text(formattedText.text).font(.title)
+    } else if formattedText.headingSize == 3 {
+        return Text(formattedText.text).font(.title2)
+    } else if formattedText.headingSize == 4 {
+        return Text(formattedText.text).font(.title3)
+    } else if formattedText.headingSize == 4 {
+        return Text(formattedText.text).font(.headline)
+    } else if formattedText.headingSize >= 6 {
+        return Text(formattedText.text).font(.subheadline)
+    } else {
+        return Text(formattedText.text).font(.body)
     }
 }
+
+/**
+ SwiftUI view with formatted markdown. The formatted markdown is wrapped in a `VStack` with no extra view modifiers.
+ 
+ - Parameter markdown: The text needed to be formatted, as a `String`
+ */
+public struct FormattedMarkdown: View {
+    
+    let markdown: String
+    
+    public var body: some View {
+        let formattedStrings = formatStringToMarkdown(string: markdown)
+        VStack {
+            ForEach(0..<formattedStrings.count, id: \.self) { textView in
+                formattedStrings[textView]
+            }
+        }
+    }
+}
+
+
