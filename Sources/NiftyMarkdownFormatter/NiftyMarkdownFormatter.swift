@@ -25,7 +25,10 @@ public func formattedMarkdownArray(markdown: String) -> [Text] {
                 to: markdown.firstIndex(of: " ") ?? markdown.startIndex
             )
             var headingText = string
-            headingText.removeSubrange(...(headingText.firstIndex(of: " ") ?? headingText.startIndex))
+            headingText.removeSubrange(
+                headingText.startIndex...(headingText.firstIndex(of: " ")
+                                          ?? headingText.startIndex)
+            )
             let heading = formattedHeading(Heading(
                 text: headingText,
                 headingSize: headingSize
