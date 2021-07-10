@@ -85,7 +85,9 @@ private func formattedHeading(_ formattedText: Heading) -> Text {
  - Parameter markdown: The text needed to be formatted, as a `String`
  */
 public struct FormattedMarkdown: View {
-    
+    public init(markdown: String) {
+        self.markdown = markdown
+    }
     let markdown: String
     
     public var body: some View {
