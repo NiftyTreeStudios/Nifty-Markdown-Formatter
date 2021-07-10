@@ -11,16 +11,18 @@ private struct Heading: Identifiable {
 /**
  Formats the markdown.
 
- - Parameter string: the markdown to be formatted as a `String`.
+ - Parameter markdown: the markdown to be formatted as a `String`.
+ 
+ - Returns: array of `Text` views.
  */
-private func formatStringToMarkdown(string: String) -> [Text] {
-    var formattedStrings: [Text] = []
-    let splitStrings: [String] = string.components(separatedBy: "\n")
+func formattedMarkdownArray(markdown: String) -> [Text] {
+    var formattedTextViews: [Text] = []
+    let splitStrings: [String] = markdown.components(separatedBy: "\n")
     for string in splitStrings {
-        if string.starts(with: "#") {
-            let headingSize = string.distance(
-                from: string.startIndex,
-                to: string.firstIndex(of: " ") ?? string.startIndex
+        if markdown.starts(with: "#") {
+            let headingSize = markdown.distance(
+                from: markdown.startIndex,
+                to: markdown.firstIndex(of: " ") ?? markdown.startIndex
             )
             var headingText = string
             headingText.removeSubrange(...headingText.firstIndex(of: " ")!)
@@ -28,21 +30,21 @@ private func formatStringToMarkdown(string: String) -> [Text] {
                 text: headingText,
                 headingSize: headingSize
             ))
-            formattedStrings.append(heading)
+            formattedTextViews.append(heading)
         } else {
             if #available(iOS 15, macOS 12, *) {
-                if let attributedString = try? AttributedString(markdown: string) {
-                    formattedStrings.append(Text(attributedString))
+                if let attributedString = try? AttributedString(markdown: markdown) {
+                    formattedTextViews.append(Text(attributedString))
                 } else {
-                    formattedStrings.append(Text(string))
+                    formattedTextViews.append(Text(markdown))
                 }
             } else {
-                formattedStrings.append(Text(string))
+                formattedTextViews.append(Text(markdown))
             }
         }
     }
     
-    return formattedStrings
+    return formattedTextViews
 }
 
 /**
@@ -82,7 +84,7 @@ public struct FormattedMarkdown: View {
     let markdown: String
     
     public var body: some View {
-        let formattedStrings = formatStringToMarkdown(string: markdown)
+        let formattedStrings = formattedMarkdownArray(markdown: markdown)
         VStack {
             ForEach(0..<formattedStrings.count, id: \.self) { textView in
                 formattedStrings[textView]
