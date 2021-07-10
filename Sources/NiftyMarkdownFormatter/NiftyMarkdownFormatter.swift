@@ -19,10 +19,10 @@ public func formattedMarkdownArray(markdown: String) -> [Text] {
     var formattedTextViews: [Text] = []
     let splitStrings: [String] = markdown.components(separatedBy: "\n")
     for string in splitStrings {
-        if markdown.starts(with: "#") {
-            let headingSize = markdown.distance(
-                from: markdown.startIndex,
-                to: markdown.firstIndex(of: " ") ?? markdown.startIndex
+        if string.starts(with: "#") {
+            let headingSize = string.distance(
+                from: string.startIndex,
+                to: string.firstIndex(of: " ") ?? string.startIndex
             )
             var headingText = string
             headingText.removeSubrange(
@@ -34,15 +34,17 @@ public func formattedMarkdownArray(markdown: String) -> [Text] {
                 headingSize: headingSize
             ))
             formattedTextViews.append(heading)
+        } else if string.count == 0 {
+            // Ignore empty lines
         } else {
             if #available(iOS 15, macOS 12, *) {
-                if let attributedString = try? AttributedString(markdown: markdown) {
+                if let attributedString = try? AttributedString(markdown: string) {
                     formattedTextViews.append(Text(attributedString))
                 } else {
-                    formattedTextViews.append(Text(markdown))
+                    formattedTextViews.append(Text(string))
                 }
             } else {
-                formattedTextViews.append(Text(markdown))
+                formattedTextViews.append(Text(string))
             }
         }
     }
