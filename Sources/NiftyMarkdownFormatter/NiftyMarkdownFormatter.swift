@@ -15,7 +15,7 @@ private struct Heading: Identifiable {
  
  - Returns: array of `Text` views.
  */
-func formattedMarkdownArray(markdown: String) -> [Text] {
+public func formattedMarkdownArray(markdown: String) -> [Text] {
     var formattedTextViews: [Text] = []
     let splitStrings: [String] = markdown.components(separatedBy: "\n")
     for string in splitStrings {
