@@ -38,6 +38,8 @@ public func formattedMarkdownArray(markdown: String) -> [Text] {
         if string.starts(with: "#") {
             let heading = formatHeading(convertMarkdownHeading(string))
             formattedTextViews.append(heading)
+        } else if string.starts(with: "* ") {
+            formattedTextViews.append(Text(formatUnorderedListItem(string)))
         } else if string.range(of: "^[0-9].") != nil {
             formattedTextViews.append(Text(formatOrderedListItem(string)))
         } else if string.count == 0 {
@@ -60,7 +62,7 @@ public func formattedMarkdownArray(markdown: String) -> [Text] {
 
 // MARK: Private
 
-// MARK: Heading
+// MARK: Headings
 /// Heading struct used to represent headings.
 internal struct Heading: Identifiable, Equatable {
     let id = UUID()
@@ -116,6 +118,8 @@ internal func formatHeading(_ formattedText: Heading) -> Text {
     }
 }
 
+// MARK: Lists
+
 /**
  Formats ordered lists.
  
@@ -125,7 +129,7 @@ internal func formatHeading(_ formattedText: Heading) -> Text {
  */
 internal func formatOrderedListItem(_ string: String) -> String {
     let regex = "^[0-9]."
-    if string.range(of: regex, options: .regularExpression) != nil  {
+    if string.range(of: regex, options: .regularExpression) != nil {
         var orderedItem = string
         var orderedPrefix = string
         orderedPrefix.removeSubrange(
@@ -134,6 +138,31 @@ internal func formatOrderedListItem(_ string: String) -> String {
         orderedItem.replaceSubrange(
             orderedItem.startIndex...(
                 orderedItem.firstIndex(of: ".") ?? orderedItem.startIndex
+            ),
+            with: "**\(orderedPrefix)**")
+        return orderedItem
+    } else {
+        return string
+    }
+}
+
+/**
+ Formats unordered lists.
+ 
+ - Parameter string: the markdown string to be formatted into an unordered list item.
+ 
+ - Returns: a `Text` view formatted into an ordered list item.
+ */
+internal func formatUnorderedListItem(_ string: String) -> String {
+    if string.starts(with: "* ") {
+        var orderedItem = string
+        var orderedPrefix = string
+        orderedPrefix.removeSubrange(
+            (orderedItem.firstIndex(of: " ") ?? orderedItem.startIndex)..<orderedItem.endIndex
+        )
+        orderedItem.replaceSubrange(
+            orderedItem.startIndex...(
+                orderedItem.firstIndex(of: "*") ?? orderedItem.startIndex
             ),
             with: "**\(orderedPrefix)**")
         return orderedItem

@@ -42,4 +42,26 @@ final class NiftyMarkdownFormatterTests: XCTestCase {
         let actual = formatOrderedListItem(testString)
         XCTAssertEqual(expected, actual)
     }
+    
+    // MARK: Unordered list
+    func testUnorderedList() throws {
+        let testString = "* List item"
+        let excepted = "***** List item"
+        let actual = formatUnorderedListItem(testString)
+        XCTAssertEqual(excepted, actual)
+    }
+    
+    func testUnorderedList2() throws {
+        let testString = "* List item"
+        let excepted = "***** List item"
+        let actual = formatUnorderedListItem(testString)
+        XCTAssertEqual(excepted, actual)
+    }
+    
+    func testUnorderedListWithWrongInput() throws {
+        let testString = "No correct prefix."
+        let expected = testString
+        let actual = formatUnorderedListItem(testString)
+        XCTAssertEqual(expected, actual)
+    }
 }
