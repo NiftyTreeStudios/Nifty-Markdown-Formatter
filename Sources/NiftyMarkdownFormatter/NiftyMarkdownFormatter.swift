@@ -42,14 +42,20 @@ public func formattedMarkdownArray(markdown: String) -> [AnyView] {
             formattedViews.append(
                 AnyView(
                     HStack {
-                        Circle().frame(width: 5, height: 5)
+                        VStack(alignment: .leading) {
+                            Circle().frame(width: 5, height: 5).padding(.top, 9)
+                            Spacer()
+                        }
                         Text(formatUnorderedListItem(string))
                             .multilineTextAlignment(.leading)
                     }
                 )
             )
         } else if string.range(of: "^[0-9].") != nil {
-            formattedViews.append(AnyView(Text(formatOrderedListItem(string))))
+            // formattedViews.append(AnyView(Text(formatOrderedListItem(string))))
+            formattedViews.append(
+                formatOrderedListItem(string)
+            )
         } else if string.count == 0 {
             // Ignore empty lines
         } else {
@@ -135,22 +141,34 @@ internal func formatHeading(_ formattedText: Heading) -> Text {
  
  - Returns: a `Text` view formatted into an ordered list item.
  */
-internal func formatOrderedListItem(_ string: String) -> String {
-    let regex = "^[0-9]."
+internal func formatOrderedListItem(_ string: String) -> AnyView {
+    let regex = "^[0-9*]."
     if string.range(of: regex, options: .regularExpression) != nil {
         var orderedItem = string
         var orderedPrefix = string
         orderedPrefix.removeSubrange(
             (orderedItem.firstIndex(of: " ") ?? orderedItem.startIndex)..<orderedItem.endIndex
         )
-        orderedItem.replaceSubrange(
-            orderedItem.startIndex...(
-                orderedItem.firstIndex(of: ".") ?? orderedItem.startIndex
-            ),
-            with: "**\(orderedPrefix)**")
-        return orderedItem
+//        orderedItem.replaceSubrange(
+//            orderedItem.startIndex...(
+//                orderedItem.firstIndex(of: ".") ?? orderedItem.startIndex
+//            ),
+//            with: "**\(orderedPrefix)**")
+        orderedItem.removeSubrange(orderedItem.startIndex...(
+            orderedItem.firstIndex(of: " ") ?? orderedItem.startIndex
+        ))
+        return AnyView(
+            HStack {
+                VStack(alignment: .leading) {
+                    Text(orderedPrefix).bold().padding(.top, 9)
+                    Spacer()
+                }
+                Text(orderedItem)
+                    .multilineTextAlignment(.leading)
+            }
+        )
     } else {
-        return string
+        return AnyView(Text(string))
     }
 }
 
