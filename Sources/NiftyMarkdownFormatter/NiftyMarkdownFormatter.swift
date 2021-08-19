@@ -31,33 +31,41 @@ public struct FormattedMarkdown: View {
  
  - Returns: array of `Text` views.
  */
-public func formattedMarkdownArray(markdown: String) -> [Text] {
-    var formattedTextViews: [Text] = []
+public func formattedMarkdownArray(markdown: String) -> [AnyView] {
+    var formattedViews: [AnyView] = []
     let splitStrings: [String] = markdown.components(separatedBy: "\n")
     for string in splitStrings {
         if string.starts(with: "#") {
             let heading = formatHeading(convertMarkdownHeading(string))
-            formattedTextViews.append(heading)
+            formattedViews.append(AnyView(heading))
         } else if string.starts(with: "* ") {
-            formattedTextViews.append(Text(formatUnorderedListItem(string)))
+            formattedViews.append(
+                AnyView(
+                    HStack {
+                        Circle().frame(width: 5, height: 5)
+                        Text(formatUnorderedListItem(string))
+                            .multilineTextAlignment(.leading)
+                    }
+                )
+            )
         } else if string.range(of: "^[0-9].") != nil {
-            formattedTextViews.append(Text(formatOrderedListItem(string)))
+            formattedViews.append(AnyView(Text(formatOrderedListItem(string))))
         } else if string.count == 0 {
             // Ignore empty lines
         } else {
             if #available(iOS 15, macOS 12, *) {
                 if let attributedString = try? AttributedString(markdown: string) {
-                    formattedTextViews.append(Text(attributedString))
+                    formattedViews.append(AnyView(Text(attributedString)))
                 } else {
-                    formattedTextViews.append(Text(string))
+                    formattedViews.append(AnyView(Text(string)))
                 }
             } else {
-                formattedTextViews.append(Text(string))
+                formattedViews.append(AnyView(Text(string)))
             }
         }
     }
     
-    return formattedTextViews
+    return formattedViews
 }
 
 // MARK: Private
@@ -160,11 +168,9 @@ internal func formatUnorderedListItem(_ string: String) -> String {
         orderedPrefix.removeSubrange(
             (orderedItem.firstIndex(of: " ") ?? orderedItem.startIndex)..<orderedItem.endIndex
         )
-        orderedItem.replaceSubrange(
-            orderedItem.startIndex...(
-                orderedItem.firstIndex(of: "*") ?? orderedItem.startIndex
-            ),
-            with: "**\(orderedPrefix)**")
+        orderedItem.removeSubrange(orderedItem.startIndex...(
+            orderedItem.firstIndex(of: " ") ?? orderedItem.startIndex
+        ))
         return orderedItem
     } else {
         return string

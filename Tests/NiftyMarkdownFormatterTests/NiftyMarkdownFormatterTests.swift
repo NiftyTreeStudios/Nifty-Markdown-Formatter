@@ -46,14 +46,14 @@ final class NiftyMarkdownFormatterTests: XCTestCase {
     // MARK: Unordered list
     func testUnorderedList() throws {
         let testString = "* List item"
-        let excepted = "***** List item"
+        let excepted = "List item"
         let actual = formatUnorderedListItem(testString)
         XCTAssertEqual(excepted, actual)
     }
     
     func testUnorderedList2() throws {
         let testString = "* List item"
-        let excepted = "***** List item"
+        let excepted = "List item"
         let actual = formatUnorderedListItem(testString)
         XCTAssertEqual(excepted, actual)
     }
