@@ -9,14 +9,18 @@ import SwiftUI
  - Parameter markdown: The text needed to be formatted, as a `String`
  */
 public struct FormattedMarkdown: View {
-    public init(markdown: String) {
+    public init(markdown: String, alignment: HorizontalAlignment? = nil, spacing: CGFloat? = nil) {
         self.markdown = markdown
+        self.alignment = alignment
+        self.spacing = spacing
     }
     let markdown: String
+    var alignment: HorizontalAlignment?
+    var spacing: CGFloat?
     
     public var body: some View {
         let formattedStrings = formattedMarkdownArray(markdown: markdown)
-        VStack {
+        VStack (alignment: alignment ?? .leading, spacing: spacing ?? nil){
             ForEach(0..<formattedStrings.count, id: \.self) { textView in
                 formattedStrings[textView]
             }
