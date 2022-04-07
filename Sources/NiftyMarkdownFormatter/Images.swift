@@ -1,28 +1,38 @@
 //
-//  File.swift
+//  Images.swift
 //  
-//
 //  Created by Iiro Alhonen on 7.4.2022.
 //
 
 import SwiftUI
 
+internal func formatImageComponents(_ string: String) -> (String, URL?) {
+    var altTextString = string
+    altTextString.removeSubrange(altTextString.startIndex...altTextString.index(altTextString.startIndex, offsetBy: 1))
+    let startIndex = altTextString.firstIndex(of: "]")
+    let endIndex = altTextString.index(before: altTextString.endIndex)
+    altTextString.removeSubrange((startIndex!)...endIndex)
+
+    var imageUrlString = string
+    imageUrlString.removeSubrange(imageUrlString.startIndex...imageUrlString.firstIndex(of: "(")!)
+    imageUrlString.removeSubrange(((imageUrlString.firstIndex(of: " ") ?? imageUrlString.firstIndex(of: ")")) ?? imageUrlString.index(before: imageUrlString.endIndex))...imageUrlString.index(before: imageUrlString.endIndex))
+    print(imageUrlString)
+
+    return (altTextString, URL(string: imageUrlString))
+}
+
 /**
  Formats images.
 
- - Parameter string: the markdown string to be formatted into an image.
+ - Parameter altText: String representing the alt text of the image.
+ - Parameter url: The url pointing to the image.
 
  - Returns: a `some View` containing an `AsyncImage` view.
  */
 @available(macOS 12.0, *)
-internal func formatImage(_ string: String) -> some View {
-    // With extra readability !\[[^\]]*\]\((?<filename>.*?)(?=\"|\))(?<optionalpart>\".*\")?\)
-    // let imgRegex: NSRegularExpression = NSRegularExpression("!\[[^\]]*\]\((.*?)\s*("(?:.*[^"])")?\s*\)")
-
-    let url: URL? = URL(string: string)
-    let altText: String = string
+internal func formatImage(altText: String?, url: URL?) -> some View {
     let image = AsyncImage(url: url) { image in
-        image.accessibilityLabel(altText)
+        image.accessibilityLabel(altText ?? "")
     } placeholder: {
         ProgressView()
     }

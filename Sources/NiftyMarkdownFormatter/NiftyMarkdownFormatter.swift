@@ -1,4 +1,8 @@
-
+//
+//  NiftyMarkdownFormatter.swift
+//
+//  Created by Iiro Alhonen on 10.7.2021.
+//
 import SwiftUI
 
 // MARK: Public
@@ -67,7 +71,8 @@ public func formattedMarkdownArray(markdown: String) -> [AnyView] {
             // Ignore empty lines
         } else if string.starts(with: "![") {
             if #available(macOS 12.0, *) {
-                formattedViews.append(AnyView(formatImage(string)))
+                let imageComponents = formatImageComponents(string)
+                formattedViews.append(AnyView(formatImage(altText: imageComponents.0, url: imageComponents.1)))
             } else {
                 // Fallback on earlier versions
             }
