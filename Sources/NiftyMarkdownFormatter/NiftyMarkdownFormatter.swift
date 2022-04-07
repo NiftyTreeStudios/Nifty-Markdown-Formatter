@@ -7,16 +7,23 @@ import SwiftUI
  SwiftUI view with formatted markdown. The formatted markdown is wrapped in a `VStack` with no extra view modifiers.
  
  - Parameter markdown: The text needed to be formatted, as a `String`
+ - Parameter alignment: The horizontal alignment of the `VStack` in the view. Default is `.center`, like in default `VStack`.
+ - Parameter spacing: The distance between adjacent subviews, or `nil` if you want the stack to choose a default distance for each pair of subviews.
  */
 public struct FormattedMarkdown: View {
-    public init(markdown: String) {
-        self.markdown = markdown
-    }
     let markdown: String
+    let alignment: HorizontalAlignment
+    let spacing: CGFloat?
+
+    public init(markdown: String, alignment: HorizontalAlignment? = nil, spacing: CGFloat? = nil) {
+        self.markdown = markdown
+        self.alignment = alignment ?? .center
+        self.spacing = spacing
+    }
     
     public var body: some View {
         let formattedStrings = formattedMarkdownArray(markdown: markdown)
-        VStack {
+        VStack(alignment: alignment, spacing: spacing) {
             ForEach(0..<formattedStrings.count, id: \.self) { textView in
                 formattedStrings[textView]
             }
