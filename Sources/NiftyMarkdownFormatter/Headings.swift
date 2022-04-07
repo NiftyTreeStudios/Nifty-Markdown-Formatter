@@ -53,7 +53,7 @@ internal func formatHeading(_ formattedText: Heading) -> Text {
         return Text(formattedText.text).font(.title2)
     } else if formattedText.headingSize == 4 {
         return Text(formattedText.text).font(.title3)
-    } else if formattedText.headingSize == 4 {
+    } else if formattedText.headingSize == 5 {
         return Text(formattedText.text).font(.headline)
     } else if formattedText.headingSize >= 6 {
         return Text(formattedText.text).font(.subheadline)
