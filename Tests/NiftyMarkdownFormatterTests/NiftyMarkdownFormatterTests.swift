@@ -20,9 +20,41 @@ final class NiftyMarkdownFormatterTests: XCTestCase {
         XCTAssertEqual(expected.text, actual.text)
         XCTAssertEqual(expected.headingSize, actual.headingSize)
     }
-    
-    // MARK: Ordered list
 
+    // MARK: Image
+    func testImageConversionFromEmpty() throws {
+        let testString = "![]()"
+        let expected = ("", URL(string: ""))
+        let actual = formatImageComponents(testString)
+        XCTAssertEqual(expected.0, actual.0)
+        XCTAssertEqual(expected.1, actual.1)
+    }
+
+    func testImageConversionEmptyAltText() throws {
+        let testString = "![](http://www.google.com/)"
+        let expected = ("", URL(string: "http://www.google.com/"))
+        let actual = formatImageComponents(testString)
+        XCTAssertEqual(expected.0, actual.0)
+        XCTAssertEqual(expected.1, actual.1)
+    }
+
+    func testImageConversion() throws {
+        let testString = "![Google](http://www.google.com/)"
+        let expected = ("Google", URL(string: "http://www.google.com/"))
+        let actual = formatImageComponents(testString)
+        XCTAssertEqual(expected.0, actual.0)
+        XCTAssertEqual(expected.1, actual.1)
+    }
+
+    func testImageConversionEmptyUrl() throws {
+        let testString = "![Google]()"
+        let expected = ("Google", URL(string: ""))
+        let actual = formatImageComponents(testString)
+        XCTAssertEqual(expected.0, actual.0)
+        XCTAssertEqual(expected.1, actual.1)
+    }
+
+    // MARK: Ordered list
     func testOrderedList() throws {
         throw XCTSkip("Need to fix the test, expected failure not working either")
         let testString = "1. List item"
