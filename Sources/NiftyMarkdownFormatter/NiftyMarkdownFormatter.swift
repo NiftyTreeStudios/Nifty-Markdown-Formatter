@@ -70,7 +70,7 @@ public func formattedMarkdownArray(markdown: String) -> [AnyView] {
         } else if string.count == 0 {
             // Ignore empty lines
         } else if string.starts(with: "![") {
-            if #available(macOS 12.0, *) {
+            if #available(iOS 15, macOS 12, *) {
                 let imageComponents = formatImageComponents(string)
                 formattedViews.append(AnyView(formatImage(altText: imageComponents.0, url: imageComponents.1)))
             } else {
