@@ -29,7 +29,6 @@ internal func formatImageComponents(_ string: String) -> (String, URL?) {
 
  - Returns: a `some View` containing an `AsyncImage` view.
  */
-@available(macOS 12.0, *)
 internal func formatImage(altText: String?, url: URL?) -> some View {
     let image = AsyncImage(url: url) { image in
         image.accessibilityLabel(altText ?? "")
