@@ -32,7 +32,9 @@ internal func formatImageComponents(_ string: String) -> (String, URL?) {
 @available(iOS 15, macOS 12, *)
 internal func formatImage(altText: String?, url: URL?) -> some View {
     let image = AsyncImage(url: url) { image in
-        image.accessibilityLabel(altText ?? "")
+        image
+            .resizable()
+            .accessibilityLabel(altText ?? "")
     } placeholder: {
         ProgressView()
     }
