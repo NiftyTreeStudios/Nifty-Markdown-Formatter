@@ -2,4 +2,4 @@ version: 1
 builder:
   configs:
     - platform: ios
-      documentation_targets: [NiftyMarkdownFormatter]
+      documentation_targets: ["Nifty Markdown Formatter"]
